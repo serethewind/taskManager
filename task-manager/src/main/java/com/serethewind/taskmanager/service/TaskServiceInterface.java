@@ -1,7 +1,6 @@
 package com.serethewind.taskmanager.service;
 
 import com.serethewind.taskmanager.dto.TaskRequest;
-import com.serethewind.taskmanager.entity.Task;
 
 import java.util.List;
 
@@ -15,5 +14,5 @@ public interface TaskServiceInterface {
 
     TaskRequest updateTask(Long id, TaskRequest taskRequest);
 
-    String deleteTask(Long id);
+    void deleteTask(Long id);
 }

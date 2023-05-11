@@ -23,14 +23,25 @@ public class TaskController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<TaskRequest> getSingleTask(@PathVariable("id") Long id){
+    public ResponseEntity<TaskRequest> getSingleTask(@PathVariable("id") Long id) {
         return new ResponseEntity<>(taskServiceImpl.fetchTaskById(id), HttpStatus.OK);
     }
 
     @PostMapping
-    public ResponseEntity<TaskRequest> createTask(@RequestBody TaskRequest taskRequest){
+    public ResponseEntity<TaskRequest> createTask(@RequestBody TaskRequest taskRequest) {
         return new ResponseEntity<>(taskServiceImpl.createSingleTask(taskRequest), HttpStatus.OK);
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<TaskRequest> updateTask(@PathVariable("id") Long id, @RequestBody TaskRequest taskRequest) {
+        return new ResponseEntity<>(taskServiceImpl.updateTask(id, taskRequest), HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{id}")
+    public String deleteTaskById(@PathVariable("id") Long id) {
+        taskServiceImpl.deleteTask(id);
+        return "Task successfully deleted";
+
+    }
 
 }
