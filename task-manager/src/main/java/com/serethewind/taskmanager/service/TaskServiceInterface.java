@@ -1,18 +1,23 @@
 package com.serethewind.taskmanager.service;
 
 import com.serethewind.taskmanager.dto.TaskRequest;
+import com.serethewind.taskmanager.dto.TaskResponse;
 
 import java.util.List;
 
 public interface TaskServiceInterface {
 
-    List<TaskRequest> fetchAllTask();
+    List<TaskResponse> fetchAllTask();
 
-    TaskRequest fetchTaskById(Long id);
+    TaskResponse fetchTaskById(Long id);
 
-    TaskRequest createSingleTask(TaskRequest taskRequest);
+    TaskResponse createSingleTask(TaskRequest taskRequest);
 
-    TaskRequest updateTask(Long id, TaskRequest taskRequest);
+    TaskResponse updateTask(Long id, TaskRequest taskRequest);
 
-    void deleteTask(Long id);
+    String deleteTask(Long id);
+
+    TaskResponse completeTask(Long id);
+
+    TaskResponse inCompleteTask(Long id);
 }

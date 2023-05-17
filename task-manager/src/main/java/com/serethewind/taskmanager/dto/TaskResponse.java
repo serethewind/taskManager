@@ -9,8 +9,10 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class TaskRequest {
-    private String name;
+public class TaskResponse {
+
+    private Long id;
+    private String title;
     private String description;
-    private boolean isCompleted;
+    private boolean completed;
 }
