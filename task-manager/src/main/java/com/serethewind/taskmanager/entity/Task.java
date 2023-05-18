@@ -22,6 +22,6 @@ public class Task {
     private String name;
     @Column(nullable = false)
     private String description;
-
+    @Column(columnDefinition = "BIT(1) default 0")
     private boolean isCompleted;
 }

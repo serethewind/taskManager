@@ -17,18 +17,13 @@ import java.util.List;
 
 @Service
 public class TaskServiceImpl implements TaskServiceInterface {
-
-
     private TaskRepository taskRepository;
 
     private ModelMapper modelMapper;
 
     @Autowired
-    public TaskServiceImpl(TaskRepository taskRepository) {
+    public TaskServiceImpl(TaskRepository taskRepository, ModelMapper modelMapper) {
         this.taskRepository = taskRepository;
-    }
-
-    public TaskServiceImpl(ModelMapper modelMapper) {
         this.modelMapper = modelMapper;
     }
 
@@ -73,7 +68,7 @@ public class TaskServiceImpl implements TaskServiceInterface {
     public String deleteTask(Long id) {
         String response;
         boolean status = taskRepository.existsById(id);
-        if (true) {
+        if (status) {
 //            Task task = taskRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
             taskRepository.deleteById(id);
             response = "User with id " + id + " has been successfully deleted";
@@ -93,10 +88,10 @@ public class TaskServiceImpl implements TaskServiceInterface {
 
     @Override
     public TaskResponse inCompleteTask(Long id) {
-       Task task = taskRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Task not found with id: " + id));
-       task.setCompleted(false);
-       taskRepository.save(task);
-       return modelMapper.map(task, TaskResponse.class);
+        Task task = taskRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Task not found with id: " + id));
+        task.setCompleted(false);
+        taskRepository.save(task);
+        return modelMapper.map(task, TaskResponse.class);
     }
 
 
