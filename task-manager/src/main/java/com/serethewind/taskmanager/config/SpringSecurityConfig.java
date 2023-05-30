@@ -36,7 +36,7 @@ public class SpringSecurityConfig {
     }
 
     @Bean
-    SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf().disable()
                 .authorizeHttpRequests((authorize) -> {
 //            authorize.requestMatchers(HttpMethod.POST, "/api/**").hasRole("ADMIN");
@@ -49,7 +49,6 @@ public class SpringSecurityConfig {
                 }).httpBasic(Customizer.withDefaults());
         return http.build();
     }
-
     //The below served for in-memory authentication. No longer needed, as we are making use of database authentication
 //    @Bean
 //    public UserDetailsService userDetailsService() {
@@ -58,6 +57,4 @@ public class SpringSecurityConfig {
 //
 //        return new InMemoryUserDetailsManager(noah, admin);
 //    }
-
-
 }

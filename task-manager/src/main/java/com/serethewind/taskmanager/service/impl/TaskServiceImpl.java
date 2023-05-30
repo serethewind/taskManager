@@ -79,6 +79,11 @@ public class TaskServiceImpl implements TaskServiceInterface {
     }
 
     @Override
+    public List<Task> fetchTaskByQuery(String query) {
+        return taskRepository.findByNameContainsIgnoreCaseOrDescriptionContainsIgnoreCase(query);
+    }
+
+    @Override
     public TaskResponse completeTask(Long id) {
         Task task = taskRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Task not found with id: " + id));
         task.setCompleted(true);

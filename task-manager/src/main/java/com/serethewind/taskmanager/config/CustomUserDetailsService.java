@@ -1,4 +1,4 @@
-package com.serethewind.taskmanager.security;
+package com.serethewind.taskmanager.config;
 
 import com.serethewind.taskmanager.entity.User;
 import com.serethewind.taskmanager.repository.UserRepository;
@@ -33,6 +33,8 @@ public class CustomUserDetailsService implements UserDetailsService {
                 usernameOrEmail,
                 user.getPassword(),
                 grantedAuthorities
+
+
         );
     }
 }
