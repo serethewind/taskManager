@@ -2,30 +2,37 @@ package com.serethewind.taskmanager.service.impl;
 
 import com.serethewind.taskmanager.dto.TaskRequest;
 import com.serethewind.taskmanager.dto.TaskResponse;
+import com.serethewind.taskmanager.dto.UserRequest;
+import com.serethewind.taskmanager.dto.UserResponse;
+import com.serethewind.taskmanager.entity.Role;
+import com.serethewind.taskmanager.entity.RoleT;
 import com.serethewind.taskmanager.entity.Task;
+import com.serethewind.taskmanager.entity.User;
 import com.serethewind.taskmanager.exception.ResourceNotFoundException;
 import com.serethewind.taskmanager.repository.TaskRepository;
+import com.serethewind.taskmanager.repository.UserRepository;
 import com.serethewind.taskmanager.service.TaskServiceInterface;
+import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 
 @Service
+@AllArgsConstructor
 public class TaskServiceImpl implements TaskServiceInterface {
     private TaskRepository taskRepository;
+    private UserRepository userRepository;
+
+    private PasswordEncoder passwordEncoder;
 
     private ModelMapper modelMapper;
 
-    @Autowired
-    public TaskServiceImpl(TaskRepository taskRepository, ModelMapper modelMapper) {
-        this.taskRepository = taskRepository;
-        this.modelMapper = modelMapper;
-    }
 
     @Override
     public List<TaskResponse> fetchAllTask() {
@@ -97,6 +104,19 @@ public class TaskServiceImpl implements TaskServiceInterface {
         task.setCompleted(false);
         taskRepository.save(task);
         return modelMapper.map(task, TaskResponse.class);
+    }
+
+    public UserResponse registerUser(UserRequest userRequest) {
+        User user = User.builder()
+                .name(userRequest.getName())
+                .username(userRequest.getUsername())
+                .email(userRequest.getEmail())
+                .password(passwordEncoder.encode(userRequest.getPassword()))
+                .roles(userRequest.getRoles())
+                .build();
+//        user.setRoles(new HashSet<>(Role.USER.ordinal()));
+        userRepository.save(user);
+        return modelMapper.map(user, UserResponse.class);
     }
 
 

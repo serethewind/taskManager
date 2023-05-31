@@ -31,7 +31,7 @@ public class SpringSecurityConfig {
     }
 
     @Bean
-    public static PasswordEncoder passwordEncoder() {
+    public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
@@ -39,10 +39,10 @@ public class SpringSecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf().disable()
                 .authorizeHttpRequests((authorize) -> {
+                    authorize.requestMatchers(HttpMethod.POST, "/api/v1/tasks/users").permitAll();
 //            authorize.requestMatchers(HttpMethod.POST, "/api/**").hasRole("ADMIN");
 //            authorize.requestMatchers(HttpMethod.PUT, "/api/**").hasRole("ADMIN");
 //            authorize.requestMatchers(HttpMethod.DELETE, "/api/**").hasRole("ADMIN");
-//            authorize.requestMatchers(HttpMethod.GET, "/api/**").hasAnyRole("ADMIN", "USER");
 //            authorize.requestMatchers(HttpMethod.PATCH, "/api/**").hasAnyRole("ADMIN", "USER");
 //            authorize.requestMatchers(HttpMethod.GET, "/api/**").permitAll(); //to publicly give access.
                     authorize.anyRequest().authenticated();

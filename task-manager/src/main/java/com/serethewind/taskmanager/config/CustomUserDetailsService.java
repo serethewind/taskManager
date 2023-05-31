@@ -27,14 +27,14 @@ public class CustomUserDetailsService implements UserDetailsService {
         User user = userRepository.findByUsernameOrEmail(usernameOrEmail, usernameOrEmail).orElseThrow(() -> new UsernameNotFoundException("Username or email entered does not match any email in database"));
 
         //user role is converted to GrantedAuthority. A set is used because the roles are also stored as sets.
-        Set<GrantedAuthority> grantedAuthorities = user.getRoles().stream().map((role) -> new SimpleGrantedAuthority(role.getName())).collect(Collectors.toSet());
+//        Set<GrantedAuthority> grantedAuthorities = user.getRoles().stream().map((role) -> new SimpleGrantedAuthority(role.getName())).collect(Collectors.toSet());
 
-        return new org.springframework.security.core.userdetails.User(
-                usernameOrEmail,
-                user.getPassword(),
-                grantedAuthorities
+//        return new org.springframework.security.core.userdetails.User(
+//                usernameOrEmail,
+//                user.getPassword(),
+//                grantedAuthorities
+//        );
 
-
-        );
+        return new CustomUserDetails(user);
     }
 }
