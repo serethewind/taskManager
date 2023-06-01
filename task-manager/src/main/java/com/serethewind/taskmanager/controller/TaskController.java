@@ -1,27 +1,36 @@
 package com.serethewind.taskmanager.controller;
 
-import com.serethewind.taskmanager.dto.TaskRequest;
-import com.serethewind.taskmanager.dto.TaskResponse;
-import com.serethewind.taskmanager.dto.UserRequest;
-import com.serethewind.taskmanager.dto.UserResponse;
+import com.serethewind.taskmanager.dto.*;
+import com.serethewind.taskmanager.service.JwtService;
+import com.serethewind.taskmanager.service.impl.JwtServiceImpl;
 import com.serethewind.taskmanager.service.impl.TaskServiceImpl;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.config.Task;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/tasks")
+@AllArgsConstructor
 public class TaskController {
-    @Autowired
-    TaskServiceImpl taskServiceImpl;
+    private TaskServiceImpl taskServiceImpl;
+
+    private JwtServiceImpl jwtServiceImpl;
+
+    private AuthenticationManager authenticationManager;
+
 
     @PostMapping("/users")
-    public ResponseEntity<UserResponse> registerUser(@RequestBody UserRequest userRequest){
+    public ResponseEntity<UserResponse> registerUser(@RequestBody UserRequest userRequest) {
         return new ResponseEntity<>(taskServiceImpl.registerUser(userRequest), HttpStatus.OK);
     }
 
@@ -33,9 +42,8 @@ public class TaskController {
     }
 
     @GetMapping("/all")
-    @PreAuthorize("hasAuthority('ADMIN')")
-    public String getToHomePage(){
-        return "Home page accessed by admin";
+    public String getToHomePage() {
+        return "Home page accessed by all";
     }
 
     @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
@@ -64,14 +72,30 @@ public class TaskController {
 
     @PatchMapping("/{id}/complete")
     @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
-    public ResponseEntity<TaskResponse> setToComplete(@PathVariable("id") Long id){
+    public ResponseEntity<TaskResponse> setToComplete(@PathVariable("id") Long id) {
         return new ResponseEntity<>(taskServiceImpl.completeTask(id), HttpStatus.OK);
     }
 
     @PatchMapping("/{id}/incomplete")
     @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
-    public ResponseEntity<TaskResponse> setToInComplete(@PathVariable("id") Long id){
+    public ResponseEntity<TaskResponse> setToInComplete(@PathVariable("id") Long id) {
         return new ResponseEntity<>(taskServiceImpl.inCompleteTask(id), HttpStatus.OK);
     }
+
+
+    @PostMapping("/authenticate")
+    public String authenticateAndGetToken(@RequestBody JwtAuthRequest jwtAuthRequest) {
+//        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(jwtAuthRequest.getUsername(), jwtAuthRequest.getPassword()));
+//        if (authentication.isAuthenticated()){
+//            System.out.println("successful");
+//            return jwtServiceImpl.generateToken(jwtAuthRequest.getUsername());
+//
+//        }
+//        System.out.println("failed");
+//        throw new UsernameNotFoundException("Invalid User");
+        System.out.println("successful");
+        return jwtServiceImpl.generateToken(jwtAuthRequest.getUsername());
+    }
+
 
 }
