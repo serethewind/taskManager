@@ -29,21 +29,21 @@ public class TaskController {
     private AuthenticationManager authenticationManager;
 
 
+    @GetMapping("/all")
+    public String getToHomePage() {
+        return "Home page accessed by all";
+    }
+
     @PostMapping("/users")
     public ResponseEntity<UserResponse> registerUser(@RequestBody UserRequest userRequest) {
         return new ResponseEntity<>(taskServiceImpl.registerUser(userRequest), HttpStatus.OK);
     }
-
     //get all tasks
+
     @GetMapping("/{id}")
     @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
     public ResponseEntity<TaskResponse> getSingleTask(@PathVariable("id") Long id) {
         return new ResponseEntity<>(taskServiceImpl.fetchTaskById(id), HttpStatus.OK);
-    }
-
-    @GetMapping("/all")
-    public String getToHomePage() {
-        return "Home page accessed by all";
     }
 
     @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
@@ -85,17 +85,11 @@ public class TaskController {
 
     @PostMapping("/authenticate")
     public String authenticateAndGetToken(@RequestBody JwtAuthRequest jwtAuthRequest) {
-//        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(jwtAuthRequest.getUsername(), jwtAuthRequest.getPassword()));
-//        if (authentication.isAuthenticated()){
-//            System.out.println("successful");
-//            return jwtServiceImpl.generateToken(jwtAuthRequest.getUsername());
-//
-//        }
-//        System.out.println("failed");
-//        throw new UsernameNotFoundException("Invalid User");
-        System.out.println("successful");
-        return jwtServiceImpl.generateToken(jwtAuthRequest.getUsername());
+        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(jwtAuthRequest.getUsername(), jwtAuthRequest.getPassword()));
+        if (authentication.isAuthenticated()) {
+            return jwtServiceImpl.generateToken(jwtAuthRequest.getUsername());
+        } else {
+            throw new UsernameNotFoundException("Invalid user request");
+        }
     }
-
-
 }
