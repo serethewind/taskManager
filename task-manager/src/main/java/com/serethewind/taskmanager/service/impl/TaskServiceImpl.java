@@ -47,7 +47,11 @@ public class TaskServiceImpl implements TaskServiceInterface {
 
     @Override
     public TaskResponse createSingleTask(TaskRequest taskRequest) {
-        Task task = modelMapper.map(taskRequest, Task.class);
+        Task task = Task.builder()
+                .name(taskRequest.getName())
+                .description(taskRequest.getDescription())
+                .isCompleted(taskRequest.isCompleted())
+                .build();
         taskRepository.save(task);
         return modelMapper.map(task, TaskResponse.class);
     }
