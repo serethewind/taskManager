@@ -1,7 +1,9 @@
 package com.serethewind.taskmanager.service.impl;
 
+import com.serethewind.taskmanager.config.JwtGenerator;
 import com.serethewind.taskmanager.dto.AuthLoginDto;
 import com.serethewind.taskmanager.dto.AuthRegisterDto;
+import com.serethewind.taskmanager.dto.AuthResponseDto;
 import com.serethewind.taskmanager.entity.Role;
 import com.serethewind.taskmanager.entity.UserEntity;
 import com.serethewind.taskmanager.repository.RoleRepository;
@@ -25,11 +27,14 @@ public class AuthServiceImpl implements AuthServiceInterface {
 
     private AuthenticationManager authenticationManager;
 
-    public AuthServiceImpl(PasswordEncoder passwordEncoder, UserRepository userRepository, RoleRepository roleRepository, AuthenticationManager authenticationManager) {
+    private JwtGenerator jwtGenerator;
+
+    public AuthServiceImpl(PasswordEncoder passwordEncoder, UserRepository userRepository, RoleRepository roleRepository, AuthenticationManager authenticationManager, JwtGenerator jwtGenerator) {
         this.passwordEncoder = passwordEncoder;
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.authenticationManager = authenticationManager;
+        this.jwtGenerator = jwtGenerator;
     }
 
     @Override
@@ -57,9 +62,10 @@ public class AuthServiceImpl implements AuthServiceInterface {
     }
 
     @Override
-    public String loginUser(AuthLoginDto authLoginDto) {
+    public AuthResponseDto loginUser(AuthLoginDto authLoginDto) {
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authLoginDto.getUsername(), authLoginDto.getPassword()));
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        return "User logged in successfully";
+        String token = jwtGenerator.generateToken(authentication);
+        return new AuthResponseDto(token);
     }
 }

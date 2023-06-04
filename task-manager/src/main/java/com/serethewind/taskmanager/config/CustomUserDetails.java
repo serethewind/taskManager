@@ -1,7 +1,6 @@
-package com.serethewind.taskmanager.security;
+package com.serethewind.taskmanager.config;
 
 import com.serethewind.taskmanager.entity.UserEntity;
-import com.serethewind.taskmanager.repository.UserRepository;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

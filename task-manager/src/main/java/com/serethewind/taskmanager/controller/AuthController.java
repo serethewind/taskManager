@@ -2,6 +2,7 @@ package com.serethewind.taskmanager.controller;
 
 import com.serethewind.taskmanager.dto.AuthLoginDto;
 import com.serethewind.taskmanager.dto.AuthRegisterDto;
+import com.serethewind.taskmanager.dto.AuthResponseDto;
 import com.serethewind.taskmanager.service.impl.AuthServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -24,7 +25,7 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> loginUser(@RequestBody AuthLoginDto authLoginDto){
+    public ResponseEntity<AuthResponseDto> loginUser(@RequestBody AuthLoginDto authLoginDto){
         return new ResponseEntity<>(authService.loginUser(authLoginDto), HttpStatus.OK);
     }
 }
