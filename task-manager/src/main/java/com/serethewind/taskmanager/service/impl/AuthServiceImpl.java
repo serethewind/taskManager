@@ -1,5 +1,6 @@
 package com.serethewind.taskmanager.service.impl;
 
+import com.serethewind.taskmanager.dto.AuthLoginDto;
 import com.serethewind.taskmanager.dto.AuthRegisterDto;
 import com.serethewind.taskmanager.entity.Role;
 import com.serethewind.taskmanager.entity.UserEntity;
@@ -7,6 +8,9 @@ import com.serethewind.taskmanager.repository.RoleRepository;
 import com.serethewind.taskmanager.repository.UserRepository;
 import com.serethewind.taskmanager.service.AuthServiceInterface;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -53,7 +57,9 @@ public class AuthServiceImpl implements AuthServiceInterface {
     }
 
     @Override
-    public String loginUser(AuthRegisterDto authRegisterDto) {
-        return null;
+    public String loginUser(AuthLoginDto authLoginDto) {
+        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authLoginDto.getUsername(), authLoginDto.getPassword()));
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        return "User logged in successfully";
     }
 }
