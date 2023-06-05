@@ -42,7 +42,7 @@ public class AuthServiceImpl implements AuthServiceInterface {
         //check if username exists. if not, create user.
 
         if (!userRepository.existsByUsername(authRegisterDto.getUsername()).get()) {
-            Role roles = roleRepository.findByName("USER");
+            Role roles = roleRepository.findByName("ADMIN");
 
             UserEntity user = UserEntity.builder()
                     .fullname(authRegisterDto.getFullname())

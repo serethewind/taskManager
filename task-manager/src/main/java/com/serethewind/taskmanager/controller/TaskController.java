@@ -1,5 +1,6 @@
 package com.serethewind.taskmanager.controller;
 
+import com.serethewind.taskmanager.dto.CustomTaskResponse;
 import com.serethewind.taskmanager.dto.TaskRequest;
 import com.serethewind.taskmanager.dto.TaskResponse;
 import com.serethewind.taskmanager.service.impl.TaskServiceImpl;
@@ -25,11 +26,20 @@ public class TaskController {
         return new ResponseEntity<>(taskServiceImpl.fetchTaskById(id), HttpStatus.OK);
     }
 
+//    @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
+//    @GetMapping
+//    public ResponseEntity<List<TaskResponse>> getAllTask() {
+//        return new ResponseEntity<>(taskServiceImpl.fetchAllTask(), HttpStatus.OK);
+//    }
+
     @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
     @GetMapping
-    public ResponseEntity<List<TaskResponse>> getAllTask() {
-        return new ResponseEntity<>(taskServiceImpl.fetchAllTask(), HttpStatus.OK);
+    public ResponseEntity<CustomTaskResponse> getAllTask(@RequestParam(value = "pageNo", defaultValue = "0", required = false) int pageNo,
+                                                         @RequestParam(value = "pageSize", defaultValue = "10", required = false) int pageSize) {
+
+        return new ResponseEntity<>(taskServiceImpl.fetchAllTask(pageNo, pageSize), HttpStatus.OK);
     }
+
 
     @PutMapping("/{id}")
     @PreAuthorize("hasAuthority('ADMIN')")
@@ -51,13 +61,13 @@ public class TaskController {
 
     @PatchMapping("/{id}/complete")
     @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
-    public ResponseEntity<TaskResponse> setToComplete(@PathVariable("id") Long id){
+    public ResponseEntity<TaskResponse> setToComplete(@PathVariable("id") Long id) {
         return new ResponseEntity<>(taskServiceImpl.completeTask(id), HttpStatus.OK);
     }
 
     @PatchMapping("/{id}/incomplete")
     @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
-    public ResponseEntity<TaskResponse> setToInComplete(@PathVariable("id") Long id){
+    public ResponseEntity<TaskResponse> setToInComplete(@PathVariable("id") Long id) {
         return new ResponseEntity<>(taskServiceImpl.inCompleteTask(id), HttpStatus.OK);
     }
 

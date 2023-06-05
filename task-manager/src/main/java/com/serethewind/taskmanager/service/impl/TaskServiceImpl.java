@@ -1,5 +1,6 @@
 package com.serethewind.taskmanager.service.impl;
 
+import com.serethewind.taskmanager.dto.CustomTaskResponse;
 import com.serethewind.taskmanager.dto.TaskRequest;
 import com.serethewind.taskmanager.dto.TaskResponse;
 import com.serethewind.taskmanager.entity.Task;
@@ -8,12 +9,16 @@ import com.serethewind.taskmanager.repository.TaskRepository;
 import com.serethewind.taskmanager.service.TaskServiceInterface;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class TaskServiceImpl implements TaskServiceInterface {
@@ -27,16 +32,37 @@ public class TaskServiceImpl implements TaskServiceInterface {
         this.modelMapper = modelMapper;
     }
 
+//    @Override
+//    public List<TaskResponse> fetchAllTask() {
+//        List<Task> taskList = taskRepository.findAll();
+//        List<TaskResponse> taskResponseList = new ArrayList<>();
+//        for (Task task : taskList) {
+////            TaskResponse taskResponse1 = new TaskResponse(task.getId(), task.getName(), task.getDescription(), task.isCompleted());
+//            TaskResponse taskResponse = modelMapper.map(task, TaskResponse.class);
+//            taskResponseList.add(taskResponse);
+//        }
+//
+////        List<TaskResponse> taskResponseList = (List<TaskResponse>) taskList.stream().map(task -> modelMapper.map(task, TaskResponse.class));
+//        return taskResponseList;
+//    }
+
     @Override
-    public List<TaskResponse> fetchAllTask() {
-        List<Task> taskList = taskRepository.findAll();
-        List<TaskResponse> taskResponseList = new ArrayList<>();
-        for (Task task : taskList) {
-//            TaskResponse taskResponse1 = new TaskResponse(task.getId(), task.getName(), task.getDescription(), task.isCompleted());
-            TaskResponse taskResponse = modelMapper.map(task, TaskResponse.class);
-            taskResponseList.add(taskResponse);
-        }
-        return taskResponseList;
+    public CustomTaskResponse fetchAllTask(int pageNo, int pageSize) {
+        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        Page<Task> tasks = taskRepository.findAll(pageable);
+        List<Task> taskList = tasks.getContent();
+
+       List<TaskResponse> content = taskList.stream().map(task -> modelMapper.map(task, TaskResponse.class)).collect(Collectors.toList());
+
+        CustomTaskResponse customTaskResponse = CustomTaskResponse.builder()
+                .content(content)
+                .pageNo(tasks.getNumber())
+                .pageSize(tasks.getSize())
+                .totalElements(tasks.getTotalElements())
+                .totalPages(tasks.getTotalPages())
+                .last(tasks.isLast())
+                .build();
+        return customTaskResponse;
     }
 
     @Override
